@@ -48,10 +48,12 @@ def create_app() -> FastAPI:
         "allow_headers": ["*"],
     }
     if settings.env == "local":
-        # localhost (any port) + Cloudflare quick-tunnel hostnames for demo hosting
+        # localhost (any port) + Cloudflare quick-tunnel + Vercel hostnames, so a
+        # tunnelled backend can serve a Vercel-hosted frontend during a demo
         cors_kwargs["allow_origin_regex"] = (
             r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
             r"|https://[a-z0-9-]+\.trycloudflare\.com"
+            r"|https://[a-z0-9-]+\.vercel\.app"
         )
     elif settings.cors_origin_regex:
         # staging/production: an explicit regex (e.g. Vercel preview URLs)
