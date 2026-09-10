@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     # ---- runtime ----
     env: Literal["local", "staging", "production"] = "local"
     log_level: str = "INFO"
+    # When true, the map wind/current/temperature fields skip the live Open-Meteo
+    # call and go straight to the smooth synthetic pattern — no external network,
+    # so a demo never stalls on flaky venue wifi. Set OFFLINE=1.
+    offline: bool = False
     # Kept as a plain string so pydantic-settings does not force JSON parsing; read
     # the parsed form via ``cors_origin_list``. Accepts "a,b,c" or a JSON array.
     cors_origins: str = "http://localhost:3000"

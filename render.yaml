@@ -27,6 +27,9 @@ services:
         value: mock
       - key: SEGMENTATION_MODEL
         value: mock
+      # map wind/current/temp fields use the synthetic pattern, no external calls
+      - key: OFFLINE
+        value: "1"
       # the mock imagery provider serves the synthetic SAR quicklook from this URL;
       # set it to the deployed API's own origin after the first deploy
       - key: PUBLIC_BASE_URL

@@ -13,6 +13,7 @@ import math
 import time
 from datetime import UTC, datetime, timedelta
 
+from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.providers.oceanography._temp import open_meteo_temp_2m
 from app.schemas.common import BBox, LonLat
@@ -73,10 +74,10 @@ async def get_temp_field(
         return hit[1]
 
     points = _lattice(bbox, cols, rows)
-    field = await open_meteo_temp_2m(
+    field = None if get_settings().offline else await open_meteo_temp_2m(
         points, valid_at - timedelta(hours=1), valid_at + timedelta(hours=1)
     )
-    live = bool(field.times)
+    live = bool(field and field.times)
 
     samples: list[TempSample] = []
     for i, p in enumerate(points):

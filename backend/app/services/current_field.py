@@ -13,6 +13,7 @@ from __future__ import annotations
 import time
 from datetime import UTC, datetime, timedelta
 
+from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.providers.oceanography._current import open_meteo_current_10m
 from app.schemas.common import BBox, LonLat
@@ -64,8 +65,10 @@ async def get_current_field(
         return hit[1]
 
     points = _lattice(bbox, cols, rows)
-    field = await open_meteo_current_10m(points, valid_at - timedelta(hours=1), valid_at + timedelta(hours=1))
-    live = bool(field.times)
+    field = None if get_settings().offline else await open_meteo_current_10m(
+        points, valid_at - timedelta(hours=1), valid_at + timedelta(hours=1)
+    )
+    live = bool(field and field.times)
 
     vectors: list[CurrentVector] = []
     for i, p in enumerate(points):
