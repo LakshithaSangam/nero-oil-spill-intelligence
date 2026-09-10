@@ -62,9 +62,10 @@ get `Error: No Next.js version detected`).
 
 1. Vercel → **Add New → Project** → import `LakshithaSangam/nero-oil-spill-intelligence`.
 2. On the configure screen (or later in **Settings → Build & Deployment →
-   Root Directory**): set **Root Directory = `frontend`** and Save.
-   Framework then auto-detects as Next.js and
-   [`frontend/vercel.json`](frontend/vercel.json) supplies the build settings.
+   Root Directory**): set **Root Directory = `frontend`** and Save. Framework
+   auto-detects as **Next.js** — leave every Build & Output override **empty**
+   (do not set an Output Directory; Next.js output is not a plain folder and
+   overriding it makes every route 404).
 3. **Environment Variables:**
 
    | Name                       | Value                                    |
@@ -73,8 +74,9 @@ get `Error: No Next.js version detected`).
 
 4. **Deploy** → `https://<project>.vercel.app`.
 
-If the project already exists and failed: **Settings → Build & Deployment →
-Root Directory → `frontend` → Save**, then **Deployments → ⋯ → Redeploy**.
+If the project already exists and failed: **Settings → Build & Deployment** →
+set **Root Directory = `frontend`**, clear any **Output Directory** override,
+Save → **Deployments → ⋯ → Redeploy**.
 
 `NEXT_PUBLIC_*` is inlined at build time, so after changing it use **Redeploy**
 (not just "Visit").
