@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Next
+node_modules/
+.next/
+.next.bad*/
+.next.gone*/
+out/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env — never commit real credentials
+.env
+.env.*
+!.env.example
+*.env.bak
+*.bak
+secrets.*
+*.secret
+
+# Data / caches
+*.tif
+*.tiff
+*.nc
+*.grib
+data/cache/
+backend/app/fixtures/**/*.raw
+# regenerable synthetic training data (make_synthetic_dataset.py)
+backend/app/ml/_synth_data/
+backend/app/ml/_synth*/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ML / provider caches
+.cache/
+weights/
+*.pt
+*.7z

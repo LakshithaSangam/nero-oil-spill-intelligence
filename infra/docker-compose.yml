@@ -1,0 +1,51 @@
+name: neuro
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: neuro
+      POSTGRES_PASSWORD: neuro
+      POSTGRES_DB: neuro
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neuro -d neuro"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://neuro:neuro@db:5432/neuro
+      IMAGERY_PROVIDER: mock
+      INCIDENT_PROVIDER: mock
+      OCEANOGRAPHY_PROVIDER: mock
+      AIS_PROVIDER: mock
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["full"]
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    profiles: ["full"]
+
+volumes:
+  db-data:

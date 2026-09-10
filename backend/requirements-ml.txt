@@ -1,0 +1,9 @@
+# Optional — only for training / running the oil-spill segmentation U-Net
+# (SEGMENTATION_MODEL=trained-unet) and for unpacking the Zenodo dataset.
+#
+#   pip install -r requirements.txt -r requirements-ml.txt
+#
+# For CUDA, install the matching torch build from https://pytorch.org/ instead.
+torch==2.14.0
+tifffile==2025.5.10
+py7zr==1.1.3        # unpack the Zenodo .7z archives (or use the 7-Zip CLI)

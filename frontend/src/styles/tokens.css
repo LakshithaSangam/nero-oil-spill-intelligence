@@ -1,0 +1,125 @@
+/* =============================================================================
+   Nero design tokens (single source of truth)
+   Colours are stored as space-separated RGB channels so Tailwind can apply
+   opacity modifiers:  rgb(var(--accent) / 0.4)  ->  bg-accent/40
+   Dark-first. The light theme is a token swap under [data-theme="light"].
+
+   Palette — government-grade maritime intelligence (2026-09 command-centre pass):
+     Deep Ocean     #06141F   abyss / page ground base
+     Midnight Navy  #0B2234   page ground
+     Atlantic Blue  #123C52   secondary surface
+     Deep Teal      #164B5C   panels
+     Sea Cyan       #59E3E3   the one signature accent
+     Muted Emerald  #4FB8A8   secondary accent
+     Warm Ivory     #F5F1EA   text
+     Copper         #C8A96A   caution / metadata highlight
+     Soft Coral     #D9695E   alert
+   ========================================================================== */
+
+:root {
+  /* ---- raw palette (do not use directly in components; prefer semantics) ---- */
+  --navy-950: 6 20 31;      /* #06141F  Deep Ocean — abyss / inset       */
+  --navy-900: 11 34 52;     /* #0B2234  Midnight Navy — page ground      */
+  --navy-850: 15 46 66;     /* #0F2E42                                    */
+  --navy-800: 18 60 82;     /* #123C52  Atlantic Blue — secondary surf   */
+  --navy-700: 22 75 92;     /* #164B5C  Deep Teal — raised panel         */
+  --teal-900: 15 52 62;     /* #0F343E  deep teal wash                   */
+  --teal-700: 26 84 92;     /* #1A545C                                   */
+  --emerald-500: 58 120 108;/* #3A786C  protected-zone green             */
+  --emerald-400: 79 184 168;/* #4FB8A8  Muted Emerald                    */
+  --cyan-400: 89 227 227;   /* #59E3E3  Sea Cyan — signature accent      */
+  --cyan-300: 138 238 238;  /* #8AEEEE  hover / active                   */
+  --coral-400: 217 105 94;  /* #D9695E  Soft Coral                       */
+  --coral-300: 230 150 132; /* #E69684                                   */
+  --sand-100: 245 241 234;  /* #F5F1EA  Warm Ivory — text               */
+  --sand-200: 215 194 164;  /* #D7C2A4  neutral UI accent               */
+  --sand-300: 190 174 148;  /* #BEAE94                                   */
+  --amber-300: 200 169 106; /* #C8A96A  Copper — caution                */
+
+  /* ---- loading screen: warm archival field-report palette ---- */
+  --cream:      241 233 219; /* #F1E9DB  parchment ground    */
+  --parchment:  231 219 199; /* #E7DBC7                      */
+  --ink-warm:    58 50 42;   /* #3A322A  report ink          */
+  --rust:       166 74 46;   /* #A64A2E  oil-drum body        */
+  --rust-dark:  120 50 32;   /* #78321F  drum shadow          */
+  --oil:         13 20 26;   /* #0D141A  spilled oil          */
+  --oil-sheen:   70 92 104;  /* #465C68  faint blue-grey sheen */
+
+  /* ---- semantic surfaces ---- */
+  --bg: var(--navy-900);
+  --surface-1: 14 44 62;        /* #0E2C3E  between ground and atlantic  */
+  --surface-2: var(--navy-800); /* Atlantic Blue                        */
+  --surface-3: 25 74 94;        /* #194A5E                              */
+  --surface-inset: var(--navy-950);
+  --panel: var(--navy-700);     /* Deep Teal — raised instrument panel   */
+  --border: 34 70 84;           /* subtle cyan-slate line  */
+  --border-strong: 52 100 114;  /* #34647A               */
+
+  /* ---- semantic text ---- */
+  --text: var(--sand-100);
+  --text-muted: 168 190 194;
+  --text-subtle: 120 150 158;
+
+  /* ---- accents / status — Sea Cyan is the one signature colour ---- */
+  --accent: var(--cyan-400);          /* #59E3E3  Sea Cyan          */
+  --accent-strong: var(--cyan-300);   /* hover / active            */
+  --accent-contrast: 4 16 24;         /* near-abyss ink on cyan    */
+  --kelp: var(--emerald-400);         /* #4FB8A8 secondary accent  */
+  --success: var(--emerald-400);
+  --warning: var(--amber-300);
+  --danger: var(--coral-400);
+  --ring: var(--cyan-400);
+
+  /* ---- map / analysis layers (kept close to before; origin leans cyan) ---- */
+  --layer-spill: 96 66 52;      /* warm mid oil — near-opaque, so it reads on dark water AND over the heat-map */
+  --layer-spill-edge: 236 196 148; /* bright warm rim — crisp on any ground */
+  --layer-spill-sheen: 156 190 200; /* film catching the light             */
+  --layer-origin: 89 227 227;   /* sea cyan       */
+  --layer-forecast: 150 205 210;/* cool pale drift */
+  --layer-hindcast: var(--emerald-400);
+  --layer-ais: 168 190 194;
+  --layer-suspect: var(--coral-400);
+  --layer-protected: var(--emerald-400);
+
+  /* ---- shape / depth / motion — instrument, not glass ---- */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.34), 0 8px 26px rgb(0 0 0 / 0.28);
+  --shadow-2: 0 16px 50px rgb(0 0 0 / 0.46);
+  --glass-blur: 7px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 130ms;
+  --dur: 220ms;
+
+  /* ---- typography: Libre Baskerville headings · Inter body · IBM Plex Mono data --- */
+  --font-display: var(--ff-display), "Libre Baskerville", "Iowan Old Style", Georgia, serif;
+  --font-serif: var(--ff-serif), "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-sans: var(--ff-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--ff-mono), ui-monospace, "SF Mono", "JetBrains Mono",
+    Menlo, Consolas, monospace;
+}
+
+[data-theme="light"] {
+  --bg: 239 235 227;
+  --surface-1: 252 250 246;
+  --surface-2: 244 240 231;
+  --surface-3: 235 229 217;
+  --surface-inset: 230 223 210;
+  --panel: 252 250 246;
+  --border: 206 196 178;
+  --border-strong: 184 170 148;
+
+  --text: 11 34 52;
+  --text-muted: 64 88 100;
+  --text-subtle: 112 132 142;
+
+  --accent: 32 150 148;
+  --accent-strong: 22 120 118;
+  --accent-contrast: 252 250 246;
+
+  --layer-ais: 96 112 122;
+  --shadow-1: 0 1px 2px rgb(18 40 55 / 0.1), 0 2px 10px rgb(18 40 55 / 0.08);
+  --shadow-2: 0 10px 34px rgb(18 40 55 / 0.14);
+}

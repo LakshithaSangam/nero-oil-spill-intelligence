@@ -1,0 +1,37 @@
+# --- API ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+httpx==0.28.1
+python-multipart==0.0.20
+
+# --- Geospatial ---
+shapely==2.0.6
+geopandas==1.0.1
+pyproj==3.7.0
+numpy==2.2.1
+
+# --- Real oceanography provider (copernicus-marine) ---
+# Pulls xarray + zarr; only needed when OCEANOGRAPHY_PROVIDER=copernicus-marine.
+copernicusmarine>=2.0,<3
+
+# --- AI / imaging ---
+# opencv drives the classical dark-spot SAR segmenter (SEGMENTATION_MODEL=classical-sar).
+opencv-python-headless==4.10.0.84
+# A trained CNN would drop in behind SegmentationModel; torch is installed
+# separately per-platform when that lands — see backend/README.md.
+
+# --- Persistence ---
+sqlalchemy[asyncio]==2.0.36
+geoalchemy2==0.16.0
+asyncpg==0.30.0
+alembic==1.14.0
+
+# --- Reports ---
+jinja2==3.1.5
+
+# --- Dev ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+ruff==0.8.4

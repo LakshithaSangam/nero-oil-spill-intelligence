@@ -1,0 +1,638 @@
+@import "../styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  html[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: rgb(var(--bg));
+    color: rgb(var(--text));
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* deep-ocean depth behind the whole app — layered wash, faint sonar rings,
+     a soft vignette and a very light noise grain. Restrained, never a glow. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(92rem 66rem at 10% -16%, rgb(var(--teal-700) / 0.26), transparent 56%),
+      radial-gradient(78rem 56rem at 114% 2%, rgb(var(--navy-800) / 0.55), transparent 54%),
+      radial-gradient(120rem 88rem at 50% 132%, rgb(var(--navy-950) / 0.98), transparent 60%),
+      radial-gradient(circle at 78% 34%, transparent calc(18rem - 1px), rgb(var(--accent) / 0.05) 18rem, transparent calc(18rem + 1px)),
+      radial-gradient(circle at 78% 34%, transparent calc(30rem - 1px), rgb(var(--accent) / 0.035) 30rem, transparent calc(30rem + 1px)),
+      radial-gradient(circle at 78% 34%, transparent calc(44rem - 1px), rgb(var(--accent) / 0.025) 44rem, transparent calc(44rem + 1px)),
+      linear-gradient(rgb(var(--bg)), rgb(var(--bg)));
+  }
+
+  /* soft edge vignette + a faint film grain, above the wash, below content */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.5;
+    background:
+      radial-gradient(130% 120% at 50% 0%, transparent 58%, rgb(var(--navy-950) / 0.55) 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: auto, 140px 140px;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.28);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring) / 0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* coordinates & metadata — IBM Plex Mono, tabular */
+  .tnum {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* the recurring surface: an instrument panel over the water — layered depth,
+     a faint cyan lit top edge, restrained blur. Not a glass card. */
+  .panel {
+    position: relative;
+    background:
+      linear-gradient(rgb(var(--surface-1) / 0.98), rgb(var(--surface-1) / 0.93) 60%, rgb(var(--navy-950) / 0.55));
+    border: 1px solid rgb(var(--border));
+    border-top-color: rgb(var(--accent) / 0.22);
+    border-radius: var(--radius);
+    box-shadow:
+      var(--shadow-1),
+      inset 0 1px 0 rgb(var(--accent) / 0.06);
+    backdrop-filter: blur(var(--glass-blur));
+  }
+
+  .panel-2 {
+    background: rgb(var(--surface-2) / 0.92);
+    border: 1px solid rgb(var(--border));
+    border-radius: var(--radius-sm);
+  }
+
+  .hairline {
+    border-color: rgb(var(--border));
+  }
+
+  /* editorial helpers — typography + rules doing the work of containers */
+  .eyebrow {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgb(var(--text-subtle));
+  }
+
+  .rule {
+    height: 1px;
+    border: 0;
+    background: rgb(var(--border));
+  }
+
+  .h-editorial {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+  }
+
+  .metric {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+}
+
+/* map popups — match the instrument panels, not the default white bubble */
+.maplibregl-popup-content {
+  background: rgb(var(--surface-1)) !important;
+  color: rgb(var(--text)) !important;
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-1);
+  padding: 10px 12px !important;
+  font-family: var(--font-sans);
+}
+.maplibregl-popup-tip {
+  border-top-color: rgb(var(--surface-1)) !important;
+  border-bottom-color: rgb(var(--surface-1)) !important;
+}
+.maplibregl-popup-close-button {
+  color: rgb(var(--text-subtle));
+  font-size: 16px;
+  padding: 0 5px;
+}
+.oe-pop-title {
+  font-family: var(--font-serif);
+  font-size: 0.86rem;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  color: rgb(var(--text));
+}
+.oe-pop dl { display: grid; gap: 3px; }
+.oe-pop dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.oe-pop dt {
+  color: rgb(var(--text-subtle));
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.58rem;
+}
+.oe-pop dd {
+  color: rgb(var(--text));
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-align: right;
+}
+
+/* acquisition-zone scan sweep */
+.aoi-sweep {
+  animation: aoi-scan 4.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes aoi-scan {
+  0% { transform: translateY(var(--aoi-y0)); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(var(--aoi-y1)); opacity: 0; }
+}
+
+/* ============================================================================
+   Opening sequence — deep-ocean hold → oil drum leaks → floods → interface
+   Dark by design: it reads as the app coming online, never a white screen.
+   ========================================================================= */
+
+.boot {
+  transition: opacity 420ms ease 320ms;
+}
+.boot[data-phase="flood"] {
+  opacity: 0;
+}
+
+.boot-ground {
+  background:
+    radial-gradient(120% 90% at 50% 32%, rgb(var(--navy-800)), rgb(var(--navy-900)) 58%, rgb(var(--navy-950)));
+  transition: opacity 360ms ease;
+}
+.boot[data-phase="flood"] .boot-ground {
+  opacity: 0;
+}
+
+.boot-stage {
+  transition: opacity 300ms ease, transform 500ms cubic-bezier(0.6, 0, 0.4, 1);
+}
+.boot[data-phase="flood"] .boot-stage {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+.boot-drum {
+  transform-origin: 66px 118px;
+  animation: boot-drum-tilt 6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
+}
+.boot-drum-oil {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: boot-drum-leak 6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
+}
+.boot-caption {
+  animation: boot-breathe 3.4s ease-in-out infinite;
+}
+
+.boot-flood {
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
+  border-radius: 45% 55% 52% 48% / 50% 48% 52% 50%;
+  background: rgb(var(--oil));
+  transform: scale(0);
+  transition:
+    transform 780ms cubic-bezier(0.7, 0, 0.35, 1),
+    background-color 620ms ease 200ms;
+}
+.boot[data-phase="flood"] .boot-flood {
+  transform: scale(64);
+  background: rgb(var(--navy-950));
+}
+
+@keyframes boot-drum-tilt {
+  0%, 12% { transform: rotate(0deg); }
+  22% { transform: rotate(-13deg); }
+  34% { transform: rotate(-9deg); }
+  52% { transform: rotate(-16deg); }
+  66% { transform: rotate(-11deg); }
+  82%, 100% { transform: rotate(-2deg); }
+}
+@keyframes boot-drum-leak {
+  0%, 14% { transform: scaleX(0.15) scaleY(0.1); opacity: 0; }
+  30% { transform: scaleX(0.7) scaleY(0.5); opacity: 0.9; }
+  55% { transform: scaleX(1.05) scaleY(0.8); opacity: 1; }
+  80% { transform: scaleX(1.25) scaleY(1); opacity: 1; }
+  100% { transform: scaleX(1.35) scaleY(1.05); opacity: 0.96; }
+}
+@keyframes boot-breathe {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .boot { transition: opacity 200ms linear !important; }
+  .boot-flood { transition: transform 240ms linear, background-color 240ms linear !important; }
+}
+
+/* ============================================================================
+   Landing page — single-screen maritime-intelligence hero.
+   Scoped under .landing; visual only, no app tokens or components touched.
+   ========================================================================= */
+.landing {
+  --l-navy: #0f3b52;
+  --l-teal: #164b5c;
+  --l-sea: #2c6b73;
+  --l-ivory: #f4efe8;
+  --l-cyan: #72d6d6;
+  --l-gold: #c8a96a;
+  --l-coral: #d96b5f;
+  color: var(--l-ivory);
+  background: #0c2431;
+  font-feature-settings: "ss01", "cv11";
+}
+.font-display {
+  font-family: var(--font-display), "Iowan Old Style", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+
+.landing-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* the ocean image is the identity — fills the hero */
+.landing-ocean {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--l-navy);
+}
+.landing-ocean-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 56% 40%;
+  filter: contrast(1.02) saturate(1.04) brightness(0.99);
+}
+/* the photo is already clear and dark on the left — only a soft left scrim for
+   the text and a base fade for the pipeline row; keep the water crisp */
+.landing-ocean::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(6, 20, 28, 0.62) 0%,
+      rgba(7, 24, 32, 0.36) 26%,
+      rgba(7, 24, 32, 0.1) 46%,
+      transparent 70%
+    ),
+    linear-gradient(to bottom, rgba(6, 18, 25, 0.18) 0%, transparent 16%, transparent 60%, rgba(5, 16, 23, 0.82) 100%);
+}
+
+/* slow "sunlight moving across the oil" sweep — a soft diagonal highlight */
+.ocean-shimmer {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    108deg,
+    transparent 34%,
+    rgba(214, 235, 235, 0.1) 46%,
+    rgba(244, 239, 232, 0.16) 50%,
+    rgba(190, 220, 220, 0.08) 55%,
+    transparent 66%
+  );
+  mix-blend-mode: soft-light;
+  transform: translate3d(-40%, 0, 0);
+  animation: ocean-shimmer 14s ease-in-out infinite;
+}
+@keyframes ocean-shimmer {
+  0%,
+  100% {
+    transform: translate3d(-42%, 0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(42%, 0, 0);
+    opacity: 0.85;
+  }
+}
+
+/* the signature: an oversized first letter cast in glossy black crude, dripping */
+.hero-h1 .oil-cap {
+  float: left;
+  font-size: 2.52em;
+  line-height: 0.8;
+  padding-right: 0.05em;
+  margin-top: 0.04em;
+  position: relative;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(
+    157deg,
+    #1c3436 0%,
+    #4c7c7d 17%,
+    #12262a 34%,
+    #6ea0a0 50%,
+    #a9d3d1 58%,
+    #3a6062 72%,
+    #1a3838 82%,
+    #244646 100%
+  );
+  background-size: 210% 100%;
+  background-position: 6% 50%;
+  animation: oil-gloss 13s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  text-shadow: none; /* the drop-cap keeps its own filter-based glow */
+  filter:
+    drop-shadow(0 3px 7px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 2px rgba(244, 239, 232, 0.55))
+    drop-shadow(0 0 16px rgba(114, 214, 214, 0.32));
+}
+@keyframes oil-gloss {
+  0%, 100% { background-position: 6% 50%; }
+  48%      { background-position: 84% 50%; }
+  64%      { background-position: 98% 50%; }
+}
+.hero-h1 .drip {
+  position: absolute;
+  bottom: -0.08em;
+  width: 0.13em;
+  height: 0.17em;
+  border-radius: 50% 50% 46% 54% / 34% 34% 66% 66%;
+  background: radial-gradient(circle at 32% 24%, #7fb2b0 0%, #244442 55%, #0d1a1a 100%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+}
+.hero-h1 .drip-1 { left: 0.14em; animation: oil-drop 3.6s ease-in 0.6s infinite; }
+.hero-h1 .drip-2 { left: 0.62em; animation: oil-drop 4.4s ease-in 2s infinite; }
+
+/* lift the headline off the busy photo — depth + a dark ambient halo for
+   legibility + a faint cyan bloom so it reads as lit, not flat */
+.hero-h1 {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 2px 30px rgba(7, 20, 26, 0.6),
+    0 0 64px rgba(114, 214, 214, 0.16);
+}
+.hero-h1 .hero-accent {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(114, 214, 214, 0.55),
+    0 0 48px rgba(114, 214, 214, 0.32);
+}
+@keyframes oil-drop {
+  0%   { opacity: 0;    transform: translateY(0) scaleY(0.5); }
+  12%  { opacity: 0.95; transform: translateY(0) scaleY(1); }
+  38%  { transform: translateY(0.1em) scaleY(1.2); }
+  64%  { opacity: 0.85; transform: translateY(0.72em) scaleY(1.5); }
+  86%  { opacity: 0;    transform: translateY(1.3em) scaleY(0.75); }
+  100% { opacity: 0; }
+}
+
+/* nav: a thin sea-cyan underline that draws itself in under the active tab */
+.landing-nav-link {
+  position: relative;
+}
+.landing-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -8px;
+  height: 1.5px;
+  background: var(--l-cyan);
+  transition: right 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.landing-nav-link:hover::after { right: 40%; }
+.landing-nav-link[data-active="true"]::after { right: 0; }
+
+/* primary CTA — a solid sea-cyan pill with a soft glow; dark ink */
+.cta-primary {
+  background: var(--l-cyan);
+  color: #08252c;
+  border: 1px solid var(--l-cyan);
+  box-shadow: 0 10px 30px -12px rgba(114, 214, 214, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background 0.2s ease;
+}
+.cta-primary:hover {
+  transform: translateY(-1.5px);
+  background: #86e2e2;
+  box-shadow: 0 16px 40px -12px rgba(114, 214, 214, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.cta-secondary {
+  border: 1px solid rgba(244, 239, 232, 0.32);
+  background: rgba(244, 239, 232, 0.02);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
+}
+.cta-secondary:hover {
+  border-color: rgba(244, 239, 232, 0.6);
+  background: rgba(244, 239, 232, 0.07);
+  transform: translateY(-1.5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-h1 .drip { display: none; }
+  .ocean-shimmer { animation: none; opacity: 0.4; }
+}
+
+/* ============================================================================
+   Command-centre ambient motion (pass 2) — decorative, all pointer-events:none
+   ========================================================================= */
+
+/* radar sweep across the console: one slow rotation every ~18s */
+.ambient-radar {
+  position: absolute;
+  left: 60%;
+  top: 44%;
+  width: 220vmax;
+  height: 220vmax;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  mix-blend-mode: soft-light;
+  background: conic-gradient(
+    from 0deg,
+    rgb(var(--accent) / 0.07) 0deg,
+    rgb(var(--accent) / 0.02) 14deg,
+    transparent 30deg,
+    transparent 360deg
+  );
+  opacity: 0;
+  animation: ambient-radar 19s linear infinite;
+}
+@keyframes ambient-radar {
+  0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0; }
+  2% { opacity: 0.5; }
+  18% { transform: translate(-50%, -50%) rotate(360deg); opacity: 0.5; }
+  22% { opacity: 0; }
+  100% { transform: translate(-50%, -50%) rotate(360deg); opacity: 0; }
+}
+
+/* sonar pulse radiating from the spill origin */
+.ambient-sonar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  border: 1.5px solid rgb(var(--accent) / 0.55);
+  opacity: 0;
+  animation: ambient-sonar 4.2s cubic-bezier(0.2, 0.6, 0.2, 1) infinite;
+}
+.ambient-sonar-2 {
+  animation-delay: 2.1s;
+}
+@keyframes ambient-sonar {
+  0% { transform: scale(0.5); opacity: 0; }
+  8% { opacity: 0.7; }
+  70% { opacity: 0.12; }
+  100% { transform: scale(9); opacity: 0; }
+}
+
+/* timeline: a premium mission-playback scrubber with a glass handle */
+.mission-scrub {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(var(--surface-inset) / 0.9);
+  outline: none;
+  cursor: pointer;
+}
+.mission-scrub::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    rgb(var(--accent) / 0.55) 0%,
+    rgb(var(--accent) / 0.55) var(--scrub, 0%),
+    rgb(var(--border) / 0.9) var(--scrub, 0%),
+    rgb(var(--border) / 0.9) 100%
+  );
+}
+.mission-scrub::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(var(--border) / 0.9);
+}
+.mission-scrub::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(var(--accent) / 0.55);
+}
+.mission-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, rgb(var(--accent-strong)), rgb(var(--accent) / 0.7));
+  border: 1px solid rgb(var(--accent-strong));
+  box-shadow: 0 0 0 4px rgb(var(--accent) / 0.14), 0 2px 8px rgb(0 0 0 / 0.4);
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+}
+.mission-scrub::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgb(var(--accent) / 0.2), 0 2px 10px rgb(0 0 0 / 0.45);
+}
+.mission-scrub:active::-webkit-slider-thumb {
+  transform: scale(1.06);
+}
+.mission-scrub::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, rgb(var(--accent-strong)), rgb(var(--accent) / 0.7));
+  border: 1px solid rgb(var(--accent-strong));
+  box-shadow: 0 0 0 4px rgb(var(--accent) / 0.14), 0 2px 8px rgb(0 0 0 / 0.4);
+}
+.mission-scrub:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px rgb(var(--accent) / 0.28);
+}
+
+/* count-up bar + gauge fills animate in via a CSS custom-prop transition */
+.iv-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(var(--accent) / 0.55), rgb(var(--accent)));
+  width: var(--v, 0%);
+  transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.iv-gauge-arc {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* dashboard sections fade in on load, gently staggered */
+.card-cascade > * {
+  opacity: 0;
+  animation: card-cascade 0.6s var(--ease) forwards;
+}
+.card-cascade > *:nth-child(1) { animation-delay: 0.04s; }
+.card-cascade > *:nth-child(2) { animation-delay: 0.12s; }
+.card-cascade > *:nth-child(3) { animation-delay: 0.2s; }
+.card-cascade > *:nth-child(4) { animation-delay: 0.28s; }
+.card-cascade > *:nth-child(5) { animation-delay: 0.36s; }
+.card-cascade > *:nth-child(6) { animation-delay: 0.44s; }
+.card-cascade > *:nth-child(7) { animation-delay: 0.52s; }
+@keyframes card-cascade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-radar,
+  .ambient-sonar { animation: none; opacity: 0; }
+  .card-cascade > * { opacity: 1; animation: none; }
+}
