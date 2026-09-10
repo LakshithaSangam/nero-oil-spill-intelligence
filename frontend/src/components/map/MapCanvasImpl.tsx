@@ -710,8 +710,8 @@ const OPACITY_TARGETS: Record<string, Array<[string, string, number]>> = {
     ["oe-spill-sheen", "fill-opacity", 0.14],
   ],
   "spill-edge": [["oe-spill-edge", "line-opacity", 1]],
-  hindcast: [["oe-hindcast-line", "line-opacity", 0.55]],
-  forecast: [["oe-forecast-line", "line-opacity", 0.85]],
+  hindcast: [["oe-hindcast-line", "line-opacity", 0.9]],
+  forecast: [["oe-forecast-line", "line-opacity", 0.88]],
   protected: [["oe-coast-line", "line-opacity", 0.9]],
 };
 
@@ -1342,12 +1342,12 @@ function installVesselLayers(map: maplibregl.Map) {
         "line-color": rankColor,
         "line-width": [
           "match", ["coalesce", ["get", "rank"], 99],
-          1, 2, 2, 1.6, 3, 1.4, 0.8,
+          1, 3, 2, 2.2, 3, 2, 1.2,
         ],
-        "line-blur": 0.5,
+        "line-blur": 0.4,
         "line-opacity": [
           "match", ["coalesce", ["get", "rank"], 99],
-          1, 0.9, 2, 0.78, 3, 0.72, 0.32,
+          1, 0.95, 2, 0.82, 3, 0.78, 0.5,
         ],
       },
     });
@@ -1360,9 +1360,10 @@ function installVesselLayers(map: maplibregl.Map) {
       filter: ["==", ["get", "role"], "gap"],
       paint: {
         "line-color": tokenColor("layer-suspect"),
-        "line-width": 1.4,
-        "line-dasharray": [1.5, 2],
-        "line-opacity": 0.9,
+        "line-width": 2.6,
+        "line-blur": 0.4,
+        "line-dasharray": [1.4, 1.6],
+        "line-opacity": 1,
       },
     });
   }
@@ -1373,11 +1374,11 @@ function installVesselLayers(map: maplibregl.Map) {
       source: AIS_SOURCE,
       filter: ["all", ["==", ["get", "role"], "closest"], ["==", ["get", "rank"], 1]],
       paint: {
-        "circle-radius": 13,
+        "circle-radius": 15,
         "circle-color": "rgba(0,0,0,0)",
         "circle-stroke-color": tokenColor("layer-suspect"),
-        "circle-stroke-width": 1.8,
-        "circle-stroke-opacity": 0.8,
+        "circle-stroke-width": 2.4,
+        "circle-stroke-opacity": 1,
       },
     });
   }
@@ -1569,9 +1570,10 @@ function installOceanLayers(map: maplibregl.Map) {
       source: HINDCAST_SOURCE,
       paint: {
         "line-color": tokenColor("layer-hindcast"),
-        "line-width": 0.9,
-        "line-opacity": 0.55,
-        "line-dasharray": [2, 2],
+        "line-width": 2,
+        "line-opacity": 0.9,
+        "line-blur": 0.3,
+        "line-dasharray": [2.4, 1.8],
       },
     });
   }
@@ -1614,11 +1616,11 @@ function installOceanLayers(map: maplibregl.Map) {
           ["linear"],
           ["coalesce", ["get", "probability"], 0.3],
           0.1,
-          1,
+          2,
           0.6,
-          2.6,
+          4,
         ],
-        "line-opacity": 0.7,
+        "line-opacity": 0.88,
         "line-dasharray": [2.5, 1.5],
       },
     });
