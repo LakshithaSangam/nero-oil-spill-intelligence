@@ -1,0 +1,29 @@
+# Slim runtime deps for hosting the demo backend (all providers on "mock",
+# SEGMENTATION_MODEL in {mock, classical-sar}). Faster, smaller image than the
+# full requirements.txt.
+#
+#   pip install -r requirements-deploy.txt
+#
+# Dropped vs requirements.txt:
+#   - sqlalchemy / asyncpg / alembic / geoalchemy2  (app.db is scaffolding; the
+#     running app is fully in-memory and imports none of it)
+#   - copernicusmarine                              (only the real oceanography
+#     provider needs it, and it is imported lazily)
+#   - pytest / ruff                                 (dev only)
+# For SEGMENTATION_MODEL=trained-unet also: pip install -r requirements-ml.txt
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+httpx==0.28.1
+python-multipart==0.0.20
+
+shapely==2.0.6
+geopandas==1.0.1
+pyproj==3.7.0
+numpy==2.2.1
+
+opencv-python-headless==4.10.0.84
+
+jinja2==3.1.5

@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     # Kept as a plain string so pydantic-settings does not force JSON parsing; read
     # the parsed form via ``cors_origin_list``. Accepts "a,b,c" or a JSON array.
     cors_origins: str = "http://localhost:3000"
+    # Optional regex for allowed origins, applied in every env. Handy for Vercel,
+    # whose preview deployments each get a fresh *.vercel.app hostname, e.g.
+    #   CORS_ORIGIN_REGEX=https://.*\.vercel\.app
+    cors_origin_regex: str | None = None
 
     @property
     def cors_origin_list(self) -> list[str]:

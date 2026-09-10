@@ -53,6 +53,9 @@ def create_app() -> FastAPI:
             r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
             r"|https://[a-z0-9-]+\.trycloudflare\.com"
         )
+    elif settings.cors_origin_regex:
+        # staging/production: an explicit regex (e.g. Vercel preview URLs)
+        cors_kwargs["allow_origin_regex"] = settings.cors_origin_regex
     app.add_middleware(CORSMiddleware, **cors_kwargs)
     app.include_router(api_router, prefix="/v1")
 

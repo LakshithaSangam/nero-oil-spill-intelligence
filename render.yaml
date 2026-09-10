@@ -1,0 +1,39 @@
+# Render blueprint for the Nero demo backend.
+# Render dashboard -> New -> Blueprint -> pick this repo. The frontend is NOT here;
+# it deploys to Vercel (see DEPLOY.md).
+services:
+  - type: web
+    name: nero-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements-deploy.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
+    autoDeploy: true
+    envVars:
+      - key: ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # every provider stays on the deterministic mock data
+      - key: IMAGERY_PROVIDER
+        value: mock
+      - key: INCIDENT_PROVIDER
+        value: mock
+      - key: OCEANOGRAPHY_PROVIDER
+        value: mock
+      - key: AIS_PROVIDER
+        value: mock
+      - key: SEGMENTATION_MODEL
+        value: mock
+      # the mock imagery provider serves the synthetic SAR quicklook from this URL;
+      # set it to the deployed API's own origin after the first deploy
+      - key: PUBLIC_BASE_URL
+        sync: false
+      # exact Vercel production origin(s), comma-separated, no trailing slash
+      - key: CORS_ORIGINS
+        sync: false
+      # allow Vercel preview URLs too (optional)
+      - key: CORS_ORIGIN_REGEX
+        value: https://.*\.vercel\.app
