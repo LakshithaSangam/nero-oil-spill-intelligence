@@ -53,32 +53,31 @@ Check it: `curl https://<your-api>/v1/health` → `{"status":"ok",...}` and
 
 ## 2 · Frontend → Vercel
 
-Vercel deploys **one app per project**. This repo is a monorepo (`frontend/` +
-`backend/`); you tell Vercel to build the `frontend/` folder — that's the
-"deploy a subfolder" mechanism, not something a `vercel.json` does by itself.
-Two equivalent ways:
-
-**A — set the Root Directory (recommended, most reliable for Next.js):**
+Vercel deploys **one app per project**, and it must build from the folder that
+holds `package.json`. This repo is a monorepo, so **you have to set the Root
+Directory to `frontend`** — there is no `vercel.json`-only workaround for a
+Next.js app in a subfolder (Vercel checks the Root Directory's `package.json`
+for `next` *before* any build command runs; if it builds from the repo root you
+get `Error: No Next.js version detected`).
 
 1. Vercel → **Add New → Project** → import `LakshithaSangam/nero-oil-spill-intelligence`.
-2. **Root Directory → Edit → `frontend`.** Framework auto-detects as Next.js;
+2. On the configure screen (or later in **Settings → Build & Deployment →
+   Root Directory**): set **Root Directory = `frontend`** and Save.
+   Framework then auto-detects as Next.js and
    [`frontend/vercel.json`](frontend/vercel.json) supplies the build settings.
-3. Add the env var below, **Deploy**.
+3. **Environment Variables:**
 
-**B — import the repo root as-is:** leave Root Directory at the repo root. The
-repo-root [`vercel.json`](vercel.json) redirects the install/build into
-`frontend/`. Use this only if you can't change the Root Directory; option A has
-fewer Next.js edge cases. (When Root Directory *is* set to `frontend`, Vercel
-reads `frontend/vercel.json` and ignores the root one — they never both apply.)
+   | Name                       | Value                                    |
+   |----------------------------|------------------------------------------|
+   | `NEXT_PUBLIC_API_BASE_URL` | your backend URL, **no trailing slash**, e.g. `https://nero-api.onrender.com` |
 
-**Environment variable (either way):**
+4. **Deploy** → `https://<project>.vercel.app`.
 
-| Name                       | Value                                    |
-|----------------------------|------------------------------------------|
-| `NEXT_PUBLIC_API_BASE_URL` | your backend URL, **no trailing slash**, e.g. `https://nero-api.onrender.com` |
+If the project already exists and failed: **Settings → Build & Deployment →
+Root Directory → `frontend` → Save**, then **Deployments → ⋯ → Redeploy**.
 
-You get `https://<project>.vercel.app`. `NEXT_PUBLIC_*` is inlined at build
-time, so after changing it use **Redeploy** (not just "Visit").
+`NEXT_PUBLIC_*` is inlined at build time, so after changing it use **Redeploy**
+(not just "Visit").
 
 ---
 
